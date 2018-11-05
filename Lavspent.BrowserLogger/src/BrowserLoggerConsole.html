@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <meta charset="utf-8" />
-<title>WebSocket Test</title>
+<title>Lavspent.BrowserLogger Console</title>
 <script language="javascript" type="text/javascript">
 
     var wsUri = "ws://" + location.host + "/logstream";
@@ -24,7 +24,6 @@
     function onOpen(evt)
     {
         writeToScreen("CONNECTED");
-        //doSend("WebSocket rocks");
     }
 
     function onClose(evt)
@@ -34,19 +33,12 @@
 
     function onMessage(evt)
     {
-        writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
-    //    websocket.close();
+        writeToScreen('<span style="color: white;">' + evt.data+'</span>');
     }
 
     function onError(evt)
     {
         writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-    }
-
-    function doSend(message)
-    {
-//        writeToScreen("SENT: " + message);
-//        websocket.send(message);
     }
 
     function writeToScreen(message)
@@ -62,5 +54,4 @@
 </script>
 
 <h2>Lavspent.BrowserLogger Console</h2>
-
 <div id="output" style="background-color: black; font-family: 'Lucida Console'; color: whitesmoke; width: 100%"></div>
