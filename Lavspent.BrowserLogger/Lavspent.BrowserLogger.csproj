@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="src\" />
+    <None Remove="src\BrowserLoggerConsole.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="src\BrowserLoggerConsole.html" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lavspent.BrowserLogger", "Lavspent.BrowserLogger\Lavspent.BrowserLogger.csproj", "{A7832534-6B18-493F-A7B2-AA844008065A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lavspent.BrowserLogger.Test", "Lavspent.BrowserLogger.Test\Lavspent.BrowserLogger.Test.csproj", "{4DD9BD2C-395E-43F3-A037-2986EC4D38E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A7832534-6B18-493F-A7B2-AA844008065A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7832534-6B18-493F-A7B2-AA844008065A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7832534-6B18-493F-A7B2-AA844008065A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DD9BD2C-395E-43F3-A037-2986EC4D38E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DD9BD2C-395E-43F3-A037-2986EC4D38E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DD9BD2C-395E-43F3-A037-2986EC4D38E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DD9BD2C-395E-43F3-A037-2986EC4D38E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

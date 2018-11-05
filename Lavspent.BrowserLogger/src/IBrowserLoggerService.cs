@@ -4,7 +4,7 @@ using System.Net.WebSockets;
 
 namespace Lavspent.BrowserLogger
 {
-    public interface IBrowserLoggerService
+    internal interface IBrowserLoggerService
     {
         IDisposable RegisterWebSocket(WebSocket webSocket);
         void Write(string value);

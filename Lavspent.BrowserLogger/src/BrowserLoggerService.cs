@@ -4,11 +4,10 @@ using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Lavspent.BrowserLogger
 {
-    public class BrowserLoggerService : IBrowserLoggerService
+    internal class BrowserLoggerService : IBrowserLoggerService
     {
         private ConcurrentDictionary<WebSocket, WebSocket> _webSockets = new ConcurrentDictionary<WebSocket, WebSocket>();
 
@@ -71,14 +70,4 @@ namespace Lavspent.BrowserLogger
             }
         }
     }
-
-
-    public static class BrowserLoggerServiceExtensions
-    {
-        public static IServiceCollection AddBrowserLoggerService(this IServiceCollection serviceCollection)
-        {
-            return serviceCollection.AddSingleton<IBrowserLoggerService>(new BrowserLoggerService());
-        }
-    }
-
 }
