@@ -6,14 +6,12 @@
     var wsUri = "ws://" + location.host + "/logstream";
     var output;
 
-    function init()
-    {
+    function init() {
         output = document.getElementById("output");
         initWebSocket();
     }
 
-    function initWebSocket()
-    {
+    function initWebSocket() {
         websocket = new WebSocket(wsUri);
         websocket.onopen = function (evt) { onOpen(evt); };
         websocket.onclose = function (evt) { onClose(evt); };
@@ -21,28 +19,23 @@
         websocket.onerror = function (evt) { onError(evt); };
     }
 
-    function onOpen(evt)
-    {
+    function onOpen(evt) {
         writeToScreen("CONNECTED");
     }
 
-    function onClose(evt)
-    {
+    function onClose(evt) {
         writeToScreen("DISCONNECTED");
     }
 
-    function onMessage(evt)
-    {
-        writeToScreen('<span style="color: white;">' + evt.data+'</span>');
+    function onMessage(evt) {
+        writeToScreen('<span style="color: white;">' + evt.data + '</span>');
     }
 
-    function onError(evt)
-    {
+    function onError(evt) {
         writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
     }
 
-    function writeToScreen(message)
-    {
+    function writeToScreen(message) {
         var pre = document.createElement("p");
         pre.style.wordWrap = "break-word";
         pre.innerHTML = message;
@@ -53,5 +46,24 @@
 
 </script>
 
-<h2>Lavspent.BrowserLogger Console</h2>
-<div id="output" style="background-color: black; font-family: 'Lucida Console'; color: whitesmoke; width: 100%"></div>
+<style>
+    .console {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 25px;
+        background-color: black;
+        font-family: 'Lucida Console';
+        color: whitesmoke;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+    .footer{
+        position: absolute;
+        bottom: 0px;
+        height: 25px;
+    }
+</style>
+<div id="output" class="console"></div>
+<div class="footer">Powered by Lavspent.BrowserLogger</div>

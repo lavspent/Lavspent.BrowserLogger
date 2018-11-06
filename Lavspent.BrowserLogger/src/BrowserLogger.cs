@@ -27,7 +27,7 @@ namespace Lavspent.BrowserLogger
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             string message = formatter(state, exception);
-            this.browserLoggerService.Write(message);
+            this.browserLoggerService.Write(message+ "\r\n" + exception ?? "");
         }
     }
 
