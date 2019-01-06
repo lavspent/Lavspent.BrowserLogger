@@ -7,23 +7,23 @@ namespace Lavspent.BrowserLogger
 {
     internal class BrowserLoggerService
     {
-        internal readonly ConcurrentDictionary<WebSocket, WebSocketRegistration> _registrations = new ConcurrentDictionary<WebSocket, WebSocketRegistration>();
+        private readonly ConcurrentDictionary<WebSocket, WebSocketHandler> _registrations = new ConcurrentDictionary<WebSocket, WebSocketHandler>();
         private readonly AsyncQueue<string> _browserLoggerQueue = new AsyncQueue<string>();
 
         public BrowserLoggerService()
         {
         }
 
-        public WebSocketRegistration RegisterWebSocket(WebSocket webSocket)
+        public WebSocketHandler RegisterWebSocket(WebSocket webSocket)
         {
-            var registration = new WebSocketRegistration(this, webSocket);
-            ((IDictionary<WebSocket, WebSocketRegistration>)_registrations).Add(webSocket, registration);
+            var registration = new WebSocketHandler(this, webSocket);
+            ((IDictionary<WebSocket, WebSocketHandler>)_registrations).Add(webSocket, registration);
             return registration;
         }
 
         public void UnregisterWebSocket(WebSocket webSocket)
         {
-            ((IDictionary<WebSocket, WebSocketRegistration>)_registrations).Remove(webSocket);
+            ((IDictionary<WebSocket, WebSocketHandler>)_registrations).Remove(webSocket);
         }
 
         public void Enqueue(string value)
