@@ -1,71 +1,50 @@
-﻿using System;
+﻿using Microsoft.Extensions.Hosting;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Lavspent.BrowserLogger
 {
-    internal class BrowserLoggerService : IBrowserLoggerService
+    internal partial class BrowserLoggerService : BackgroundService//, IBrowserLoggerService
     {
-        private ConcurrentDictionary<WebSocket, WebSocket> _webSockets = new ConcurrentDictionary<WebSocket, WebSocket>();
+        internal readonly ConcurrentDictionary<WebSocket, WebSocketRegistration> _registrations = new ConcurrentDictionary<WebSocket, WebSocketRegistration>();
+        private readonly BrowserLoggerQueue _browserLoggerQueue;
 
-        public BrowserLoggerService()
+        public BrowserLoggerService(BrowserLoggerQueue browserLoggerQueue)
         {
+            this._browserLoggerQueue = browserLoggerQueue;
         }
 
-        /// <summary>
-        /// Gets the stream.
-        /// </summary>
-        /// <returns></returns>
-        public IDisposable RegisterWebSocket(WebSocket webSocket)
+        internal WebSocketRegistration RegisterWebSocket(WebSocket webSocket)
         {
-            //var stream = new Stream();
-            //var streamWriter = new StreamWriter(outputStream);
-            if (!_webSockets.TryAdd(webSocket, webSocket))
-            {
-                throw new Exception("Cound't register websocket.");
-            }
-
-            return new RegistrationDisposer(this, webSocket);
+            var registration = new WebSocketRegistration(this, webSocket);
+            ((IDictionary<WebSocket, WebSocketRegistration>)_registrations).Add(webSocket, registration);
+            return registration;
         }
 
-        private class RegistrationDisposer : IDisposable
+        internal void UnregisterWebSocket(WebSocket webSocket)
         {
-            private readonly BrowserLoggerService browserLoggerService;
-            private readonly WebSocket webSocket;
-
-            public RegistrationDisposer(BrowserLoggerService browserLoggerService, WebSocket webSocket)
-            {
-                this.browserLoggerService = browserLoggerService ?? throw new ArgumentNullException(nameof(browserLoggerService));
-                this.webSocket = webSocket ?? throw new ArgumentNullException(nameof(webSocket));
-            }
-
-            public void Dispose()
-            {
-                browserLoggerService._webSockets.TryRemove(webSocket, out var _);
-            }
+            ((IDictionary<WebSocket, WebSocketRegistration>)_registrations).Remove(webSocket);
         }
 
-        public void Write(string value)
+        protected async override Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(value);
-
-            foreach (var sw in _webSockets.Keys.ToArray())   // We need toArray here?
+            while (!cancellationToken.IsCancellationRequested)
             {
-                try
+                string loggedItem = await _browserLoggerQueue.DequeueAsync(cancellationToken);
+
+                // convert data to bytes
+                byte[] bytes = Encoding.UTF8.GetBytes(loggedItem);
+
+                // add to all listening sockets
+                foreach (var sw in _registrations.Values)
                 {
-                    sw.SendAsync(bytes, WebSocketMessageType.Text, true, CancellationToken.None).Wait();
-                } catch (Exception e)
-                {
-                    try
-                    {
-                        _webSockets.TryRemove(sw, out var _);
-                    } catch
-                    {
-                        // ignore
-                    }
+                    sw._queue.Enqueue(bytes);
                 }
             }
         }

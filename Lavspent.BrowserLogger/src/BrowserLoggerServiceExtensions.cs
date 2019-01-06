@@ -4,9 +4,11 @@ namespace Lavspent.BrowserLogger
 {
     public static class BrowserLoggerServiceExtensions
     {
-        public static IServiceCollection AddBrowserLoggerService(this IServiceCollection serviceCollection)
+        public static IServiceCollection AddBrowserLogger(this IServiceCollection serviceCollection)
         {
-            return serviceCollection.AddSingleton<IBrowserLoggerService>(new BrowserLoggerService());
+            return serviceCollection
+                .AddSingleton<BrowserLoggerQueue>()
+                .AddHostedService<BrowserLoggerService>();
         }
     }
 }

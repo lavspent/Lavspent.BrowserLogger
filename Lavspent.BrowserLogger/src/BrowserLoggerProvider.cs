@@ -4,16 +4,16 @@ namespace Lavspent.BrowserLogger
 {
     public class BrowserLoggerProvider : ILoggerProvider
     {
-        private readonly IBrowserLoggerService browserLoggerService;
+        private readonly BrowserLoggerQueue browserLoggerQueue;
 
-        internal BrowserLoggerProvider(IBrowserLoggerService browserLoggerService)
+        internal BrowserLoggerProvider(BrowserLoggerQueue browserLoggerQueue)
         {
-            this.browserLoggerService = browserLoggerService;
+            this.browserLoggerQueue = browserLoggerQueue;
         }
 
         public ILogger CreateLogger(string categoryName)
         {
-            return new BrowserLogger(this.browserLoggerService);
+            return new BrowserLogger(this.browserLoggerQueue);
         }
 
         public void Dispose()

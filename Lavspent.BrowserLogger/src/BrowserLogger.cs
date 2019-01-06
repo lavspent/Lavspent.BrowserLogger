@@ -6,16 +6,15 @@ namespace Lavspent.BrowserLogger
 
     class BrowserLogger : ILogger
     {
-        private readonly IBrowserLoggerService browserLoggerService;
+        private readonly BrowserLoggerQueue browserLoggerQueue;
 
-        public BrowserLogger(IBrowserLoggerService browserLoggerService)
+        public BrowserLogger(BrowserLoggerQueue browserLoggerQueue)
         {
-            this.browserLoggerService = browserLoggerService;
+            this.browserLoggerQueue = browserLoggerQueue;
         }
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            //throw new NotImplementedException();
             return null;
         }
 
@@ -27,8 +26,7 @@ namespace Lavspent.BrowserLogger
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             string message = formatter(state, exception);
-            this.browserLoggerService.Write(message+ "\r\n" + exception ?? "");
+            this.browserLoggerQueue.Enqueue(message+ "\r\n" + exception ?? "");
         }
     }
-
 }
