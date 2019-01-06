@@ -21,31 +21,48 @@ namespace Lavspent.BrowserLogger
         {
             if (httpContext.Request.Path == "/console")
             {
-                var assembly = Assembly.GetExecutingAssembly();
-                var resourceStream = assembly.GetManifestResourceStream("Lavspent.BrowserLogger.src.BrowserLoggerConsole.html");
-                httpContext.Response.StatusCode = 200;
-                httpContext.Response.ContentType = "text/html";
-                await resourceStream.CopyToAsync(httpContext.Response.Body);
+                await HandleConsoleRequest(httpContext);
             }
             else if (httpContext.Request.Path == "/logstream")
             {
-                if (httpContext.WebSockets.IsWebSocketRequest)
-                {
-                    WebSocket webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-
-                    using (var registration = _browserLoggerService.RegisterWebSocket(webSocket))
-                    {
-                        await registration.HandleIOAsync(httpContext.RequestAborted);
-                    }
-                }
-                else
-                {
-                    httpContext.Response.StatusCode = 400;
-                }
+                await HandleConsoleRequest(httpContext);
             }
             else
             {
                 await _next.Invoke(httpContext);
+            }
+        }
+
+        private async Task HandleConsoleRequest(HttpContext httpContext)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceStream = assembly.GetManifestResourceStream("Lavspent.BrowserLogger.src.BrowserLoggerConsole.html");
+            httpContext.Response.StatusCode = 200;
+            httpContext.Response.ContentType = "text/html";
+            await resourceStream.CopyToAsync(httpContext.Response.Body);
+        }
+
+        private async Task HandleLogStreamRequest(HttpContext httpContext)
+        {
+            if (httpContext.WebSockets.IsWebSocketRequest)
+            {
+                WebSocket webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+
+                using (var registration = _browserLoggerService.RegisterWebSocket(webSocket))
+                {
+                    try
+                    {
+                        await registration.HandleIOAsync(httpContext.RequestAborted);
+                    }
+                    catch when (httpContext.RequestAborted.IsCancellationRequested)
+                    {
+                        // ignore
+                    }
+                }
+            }
+            else
+            {
+                httpContext.Response.StatusCode = 400;
             }
         }
     }

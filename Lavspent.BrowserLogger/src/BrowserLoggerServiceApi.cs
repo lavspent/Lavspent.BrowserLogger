@@ -32,8 +32,4 @@ namespace Lavspent.BrowserLogger
             return workItem;
         }
     }
-
-    internal class BrowserLoggerQueue : AsyncQueue<string>
-    {
-    }
 }

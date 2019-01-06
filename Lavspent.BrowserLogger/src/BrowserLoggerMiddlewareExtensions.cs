@@ -9,10 +9,9 @@ namespace Lavspent.BrowserLogger
         public static IApplicationBuilder UseBrowserLogger(this IApplicationBuilder applicationBuilder)
         {
             // inject our logger
-            var xdd = applicationBuilder.ApplicationServices.GetService<BrowserLoggerService>();
-            var browserLoggerQueue = applicationBuilder.ApplicationServices.GetService<BrowserLoggerQueue>();
+            var browserLoggerService = applicationBuilder.ApplicationServices.GetService<BrowserLoggerService>();
             var loggerFactory = applicationBuilder.ApplicationServices.GetService<ILoggerFactory>();
-            loggerFactory.AddProvider(new BrowserLoggerProvider(browserLoggerQueue));
+            loggerFactory.AddProvider(new BrowserLoggerProvider(browserLoggerService));
 
             // inject our middleware
             return applicationBuilder.UseMiddleware<BrowserLoggerMiddleware>();

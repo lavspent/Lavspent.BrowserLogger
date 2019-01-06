@@ -7,8 +7,7 @@ namespace Lavspent.BrowserLogger
         public static IServiceCollection AddBrowserLogger(this IServiceCollection serviceCollection)
         {
             return serviceCollection
-                .AddSingleton<BrowserLoggerQueue>()
-                .AddHostedService<BrowserLoggerService>();
+                .AddSingleton<BrowserLoggerService>();
         }
     }
 }

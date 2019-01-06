@@ -20,7 +20,16 @@ namespace Lavspent.BrowserLogger
 
         public void Dispose()
         {
-            _browserLoggerService.UnregisterWebSocket(_webSocket);
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _browserLoggerService.UnregisterWebSocket(_webSocket);
+            }
         }
 
         public async Task HandleIOAsync(CancellationToken cancellationToken)
@@ -29,22 +38,30 @@ namespace Lavspent.BrowserLogger
             Task<WebSocketReceiveResult> receiveTask = null;
             Task<byte[]> dequeueTask = null;
 
-            while (_webSocket.State == WebSocketState.Open)
+            try
             {
-                // wait for data in either direction
-                receiveTask = receiveTask ?? _webSocket.ReceiveAsync(buf, cancellationToken);
-                dequeueTask = dequeueTask ?? _queue.DequeueAsync(cancellationToken);
-                var i = Task.WaitAny(new Task[] { receiveTask, dequeueTask}, cancellationToken);
 
-                if (i == 0)
+                while (_webSocket.State == WebSocketState.Open)
                 {
-                    await HandleReceive(receiveTask.Result, cancellationToken);
-                    receiveTask = null;
-                } else
-                {
-                    await HandleSend(dequeueTask.Result, cancellationToken);
-                    dequeueTask = null;
+                    // wait for data in either direction
+                    receiveTask = receiveTask ?? _webSocket.ReceiveAsync(buf, cancellationToken);
+                    dequeueTask = dequeueTask ?? _queue.DequeueAsync(cancellationToken);
+                    var i = Task.WaitAny(new Task[] { receiveTask, dequeueTask }, cancellationToken);
+
+                    if (i == 0)
+                    {
+                        await HandleReceive(receiveTask.Result, cancellationToken);
+                        receiveTask = null;
+                    }
+                    else
+                    {
+                        await HandleSend(dequeueTask.Result, cancellationToken);
+                        dequeueTask = null;
+                    }
                 }
+            } catch (Exception e)
+            {
+                throw;
             }
         }
 
