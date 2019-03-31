@@ -25,7 +25,7 @@ namespace Lavspent.BrowserLogger
             }
             else if (httpContext.Request.Path == "/logstream")
             {
-                await HandleConsoleRequest(httpContext);
+                await HandleLogStreamRequest(httpContext);
             }
             else
             {
