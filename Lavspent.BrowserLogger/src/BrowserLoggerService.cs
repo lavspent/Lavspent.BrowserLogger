@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Text;
@@ -26,10 +28,17 @@ namespace Lavspent.BrowserLogger
             ((IDictionary<WebSocket, WebSocketHandler>)_registrations).Remove(webSocket);
         }
 
-        public void Enqueue(string value)
+        public void Enqueue(LogMessageEntry logMessageEntry)
         {
+            // TODO: Reuse settings?
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+
+            string serializedEntry = JsonConvert.SerializeObject(logMessageEntry, settings);
+
             // convert data to bytes
-            byte[] bytes = Encoding.UTF8.GetBytes(value);
+            byte[] bytes = Encoding.UTF8.GetBytes(serializedEntry);
 
             // add to all listeners
             foreach (var sw in _registrations.Values)
