@@ -27,6 +27,19 @@
     }
 
     function onMessage(evt, options, output) {
+
+        var data = JSON.parse(evt.data);
+
+        var timestamp = data.timeStamp;
+        var levelString = data.levelString;
+        var levelBackground = data.levelBackground;
+        var levelForeground = data.levelForeground;
+        var messageColor = data.messageColor;
+        var message = data.message;
+        var logAsError = data.logAsError;
+
+        debugger;
+
         writeToScreen(output, '<span style="color: white;">' + evt.data + '</span>');
     }
 
