@@ -7,9 +7,9 @@ namespace Lavspent.BrowserLogger
     {
         public string TimeStamp;
         public string LevelString;
-        public BrowserColor LevelBackground;
-        public BrowserColor LevelForeground;
-        public BrowserColor MessageColor;
+        public string LevelBackground;
+        public string LevelForeground;
+        public string MessageColor;
         public string Message;
         public bool LogAsError;
     }

@@ -40,7 +40,7 @@
 
         debugger;
 
-        writeToScreen(output, '<span style="color: white;">' + evt.data + '</span>');
+        writeToScreen(output, `<span style="color: ${levelForeground}; background-color: ${levelBackground}">${levelString}</span><span style = "color: ${messageColor}" > ${ message }</span >`);
     }
 
     function onError(evt, options, output) {

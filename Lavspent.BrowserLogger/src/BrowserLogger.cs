@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions.Internal;
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace Lavspent.BrowserLogger
@@ -37,8 +39,8 @@ namespace Lavspent.BrowserLogger
         static BrowserLogger()
         {
             var logLevelString = GetLogLevelString(LogLevel.Information);
-            _messagePadding = new string(' ', logLevelString.Length + _loglevelPadding.Length);
-            _newLineWithMessagePadding = Environment.NewLine + _messagePadding;
+            _messagePadding = String.Concat(Enumerable.Repeat("&nbsp;", logLevelString.Length + _loglevelPadding.Length));
+            _newLineWithMessagePadding = "<br/>" + _messagePadding;
         }
 
         public BrowserLogger(string name, Func<string, LogLevel, bool> filter, BrowserLoggerService browserLoggerService)
@@ -122,7 +124,12 @@ namespace Lavspent.BrowserLogger
 
                 var len = logBuilder.Length;
                 logBuilder.AppendLine(message);
+                var z = logBuilder.ToString();
+
                 logBuilder.Replace(Environment.NewLine, _newLineWithMessagePadding, len, message.Length);
+
+                var x = logBuilder.ToString();
+//                Debugger.Break();
             }
 
             // Example:
@@ -145,10 +152,10 @@ namespace Lavspent.BrowserLogger
             {
                 TimeStamp = timestampFormat != null ? DateTime.Now.ToString(timestampFormat) : null,
                 Message = logBuilder.ToString(),
-                MessageColor = BrowserColor.White, // TODO?! DefaultConsoleColor,
+                MessageColor = BrowserColor.White.Color, // TODO?! DefaultConsoleColor,
                 LevelString = hasLevel ? logLevelString : null,
-                LevelBackground = hasLevel ? logLevelColors.Background : null,
-                LevelForeground = hasLevel ? logLevelColors.Foreground : null,
+                LevelBackground = hasLevel ? logLevelColors.Background.Color : null,
+                LevelForeground = hasLevel ? logLevelColors.Foreground.Color : null,
                 LogAsError = logLevel >= LogToStandardErrorThreshold
             });
 
