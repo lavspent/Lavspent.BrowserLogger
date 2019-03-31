@@ -1,48 +1,47 @@
 ﻿<!DOCTYPE html>
+<html>
 <meta charset="utf-8" />
 <title>Lavspent.BrowserLogger Console</title>
 <script language="javascript" type="text/javascript">
 
-    var wsUri = "ws://" + location.host + "/logstream";
-    var output;
+    //var wsUri = "ws://" + location.host + "/logstream";
+    //var output;
 
-    function init() {
-        output = document.getElementById("output");
-        initWebSocket();
+    function init(options) {
+        var output = document.getElementById("output");
+
+        websocket = new WebSocket(options.wsUri);
+        websocket.onopen = function (evt) { onOpen(evt, options, output); };
+        websocket.onclose = function (evt) { onClose(evt, options, output); };
+        websocket.onmessage = function (evt) { onMessage(evt, options, output); };
+        websocket.onerror = function (evt) { onError(evt, options, output); };
+
     }
 
-    function initWebSocket() {
-        websocket = new WebSocket(wsUri);
-        websocket.onopen = function (evt) { onOpen(evt); };
-        websocket.onclose = function (evt) { onClose(evt); };
-        websocket.onmessage = function (evt) { onMessage(evt); };
-        websocket.onerror = function (evt) { onError(evt); };
+    function onOpen(evt, options, output) {
+        writeToScreen(output, "CONNECTED");
     }
 
-    function onOpen(evt) {
-        writeToScreen("CONNECTED");
+    function onClose(evt, options, output) {
+        writeToScreen(output, "DISCONNECTED");
     }
 
-    function onClose(evt) {
-        writeToScreen("DISCONNECTED");
+    function onMessage(evt, options, output) {
+        writeToScreen(output, '<span style="color: white;">' + evt.data + '</span>');
     }
 
-    function onMessage(evt) {
-        writeToScreen('<span style="color: white;">' + evt.data + '</span>');
+    function onError(evt, options, output) {
+        writeToScreen(output, '<span style="color: red;">ERROR:</span> ' + evt.data);
     }
 
-    function onError(evt) {
-        writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-    }
-
-    function writeToScreen(message) {
+    function writeToScreen(output, message) {
         var pre = document.createElement("p");
         pre.style.wordWrap = "break-word";
         pre.innerHTML = message;
         output.appendChild(pre);
     }
 
-    window.addEventListener("load", init, false);
+//    window.addEventListener("load", init, false);
 
 </script>
 
@@ -59,11 +58,13 @@
         overflow-x: hidden;
         overflow-y: scroll;
     }
-    .footer{
+
+    .footer {
         position: absolute;
         bottom: 0px;
         height: 25px;
     }
 </style>
-<div id="output" class="console"></div>
-<div class="footer">Powered by Lavspent.BrowserLogger</div>
+<body>
+    <div id="output" class="console"></div>
+    <div class="footer">Powered by Lavspent.BrowserLogger</div>

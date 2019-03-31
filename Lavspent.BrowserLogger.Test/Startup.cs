@@ -31,7 +31,11 @@ namespace Lavspent.BrowserLogger.Test
             }
 
             app.UseWebSockets();
-            app.UseBrowserLogger();
+            app.UseBrowserLogger(new BrowserLoggerOptions()
+            {
+                ConsolePath = "/con",
+                LogStreamPath = "/lsp"
+            });
             app.UseMvc();
         }
     }

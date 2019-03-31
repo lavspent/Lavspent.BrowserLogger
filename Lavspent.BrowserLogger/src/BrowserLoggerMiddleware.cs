@@ -1,29 +1,32 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.IO;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Lavspent.BrowserLogger
 {
+
     internal class BrowserLoggerMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly BrowserLoggerService _browserLoggerService;
+        private readonly BrowserLoggerOptions _options;
 
-
-        public BrowserLoggerMiddleware(RequestDelegate next, BrowserLoggerService browserLoggerService)
+        public BrowserLoggerMiddleware(RequestDelegate next, BrowserLoggerService browserLoggerService, BrowserLoggerOptions options)
         {
             _next = next;
             _browserLoggerService = browserLoggerService;
+            _options = options;
         }
 
         public async Task Invoke(HttpContext httpContext)
         {
-            if (httpContext.Request.Path == "/console")
+            if (httpContext.Request.Path == this._options.ConsolePath)
             {
                 await HandleConsoleRequest(httpContext);
             }
-            else if (httpContext.Request.Path == "/logstream")
+            else if (httpContext.Request.Path == this._options.LogStreamPath)
             {
                 await HandleLogStreamRequest(httpContext);
             }
@@ -40,6 +43,17 @@ namespace Lavspent.BrowserLogger
             httpContext.Response.StatusCode = 200;
             httpContext.Response.ContentType = "text/html";
             await resourceStream.CopyToAsync(httpContext.Response.Body);
+
+            string options = "{wsUri: \"ws://\" + location.host + \"" + _options.LogStreamPath + "\"}";
+            string init = "<script language=\"javascript\" type=\"text/javascript\">init(" + options + ");</script>";
+            init += "</body></html>";
+
+            using (StreamWriter streamWriter = new StreamWriter(httpContext.Response.Body))
+            {
+                streamWriter.WriteLine();
+                streamWriter.Write(init);
+                streamWriter.Flush();
+            }
         }
 
         private async Task HandleLogStreamRequest(HttpContext httpContext)
