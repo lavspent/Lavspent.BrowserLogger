@@ -8,7 +8,10 @@ Let you use your browser as a log target from any Asp.Net Core application.
 
 ##### Install:
 
-`install-package Lavspent.BrowserLogger`
+```
+install-package Lavspent.BrowserLogger`
+```
+
 
 ##### In your code:
 
