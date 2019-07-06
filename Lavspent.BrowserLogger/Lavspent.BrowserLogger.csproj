@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <PackageId>Lavspent.BrowserLogger</PackageId>
     <Authors>petter.labraaten</Authors>
     <Product>Lavspent.BrowserLogger</Product>
@@ -31,6 +31,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="nupkgs\**" />
+    <EmbeddedResource Remove="nupkgs\**" />
+    <None Remove="nupkgs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="src\BrowserLoggerConsole.html" />
   </ItemGroup>
 
@@ -39,10 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 </Project>
