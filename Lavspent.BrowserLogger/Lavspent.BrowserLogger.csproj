@@ -20,7 +20,7 @@
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageLicense>https://github.com/lavspent/Lavspent.BrowserLogger/blob/master/LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/lavspent/Lavspent.BrowserLogger</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/lavspent/Lavspent.BrowserLogger.gitt</RepositoryUrl>
+    <RepositoryUrl>https://github.com/lavspent/Lavspent.BrowserLogger.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>asp-net-core ilogger logging logger browser-logging</PackageTags>
     <PackageReleaseNotes>Initial build.</PackageReleaseNotes>
