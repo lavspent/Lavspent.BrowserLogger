@@ -5,7 +5,7 @@ sudo: required
 dist: trusty
 
 install:
- - dotnet restore --version-suffix $TRAVIS_BUILD_NUMBER
+ - dotnet restore
 
 script:
  - dotnet pack --configuration release --output nupkgs --version-suffix -$TRAVIS_BUILD_NUMBER
