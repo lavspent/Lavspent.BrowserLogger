@@ -8,5 +8,5 @@ install:
  - dotnet restore ./Lavspent.BrowserLogger/Lavspent.BrowserLogger.csproj
 
 script:
- - dotnet pack ./Lavspent.BrowserLogger/Lavspent.BrowserLogger.csproj --configuration release --output nupkgs --version-suffix -$TRAVIS_BUILD_NUMBER
+ - dotnet pack ./Lavspent.BrowserLogger/Lavspent.BrowserLogger.csproj --configuration release --output nupkgs --version-suffix .$TRAVIS_BUILD_NUMBER
  - dotnet nuget push ./Lavspent.BrowserLogger/nupkgs/Lavspent.BrowserLogger.*.nupkg --api-key $NUGET_API_KEY --source $NUGET_SOURCE
