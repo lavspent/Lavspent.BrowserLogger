@@ -11,7 +11,7 @@
     <PackageId>Lavspent.BrowserLogger</PackageId>
     <Authors>petter.labraaten</Authors>
     <Product>Lavspent.BrowserLogger</Product>
-    <Version>0.0.1-$(VersionSuffix)</Version>
+    <Version>0.0.1$(VersionSuffix)</Version>
     <AssemblyName>Lavspent.BrowserLogger</AssemblyName>
     <RootNamespace>Lavspent.BrowserLogger</RootNamespace>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
@@ -21,7 +21,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>asp-net-core ilogger logging logger browser-logging</PackageTags>
     <PackageReleaseNotes>Initial build.</PackageReleaseNotes>
-    <AssemblyVersion>0.0.1-$(VersionSuffix)</AssemblyVersion>
+    <AssemblyVersion>0.0.1$(VersionSuffix)</AssemblyVersion>
     <Copyright>Copyright © 2019 Petter Labraaten</Copyright>
     <Summary>Let you use your browser as a log target from any Asp.Net Core application.</Summary>
     <Description></Description>
