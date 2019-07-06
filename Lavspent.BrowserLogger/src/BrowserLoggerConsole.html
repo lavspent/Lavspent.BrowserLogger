@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
-<meta charset="utf-8" />
+<meta charset="utf-8"/>
 <title>Lavspent.BrowserLogger Console</title>
 <script language="javascript" type="text/javascript">
 
@@ -11,10 +11,10 @@
         var output = document.getElementById("output");
 
         websocket = new WebSocket(options.wsUri);
-        websocket.onopen = function (evt) { onOpen(evt, options, output); };
-        websocket.onclose = function (evt) { onClose(evt, options, output); };
-        websocket.onmessage = function (evt) { onMessage(evt, options, output); };
-        websocket.onerror = function (evt) { onError(evt, options, output); };
+        websocket.onopen = function(evt) { onOpen(evt, options, output); };
+        websocket.onclose = function(evt) { onClose(evt, options, output); };
+        websocket.onmessage = function(evt) { onMessage(evt, options, output); };
+        websocket.onerror = function(evt) { onError(evt, options, output); };
 
     }
 
@@ -40,7 +40,9 @@
 
         debugger;
 
-        writeToScreen(output, `<span style="color: ${levelForeground}; background-color: ${levelBackground}">${levelString}</span><span style = "color: ${messageColor}" > ${ message }</span >`);
+        writeToScreen(output,
+            `<span style="color: ${levelForeground}; background-color: ${levelBackground}">${levelString
+            }</span><span style = "color: ${messageColor}" > ${message}</span >`);
     }
 
     function onError(evt, options, output) {
@@ -60,24 +62,24 @@
 
 <style>
     .console {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        right: 0px;
-        bottom: 25px;
         background-color: black;
-        font-family: 'Lucida Console';
+        bottom: 25px;
         color: whitesmoke;
+        font-family: 'Lucida Console';
+        left: 0px;
         overflow-x: hidden;
         overflow-y: scroll;
+        position: absolute;
+        right: 0px;
+        top: 0px;
     }
 
     .footer {
-        position: absolute;
         bottom: 0px;
         height: 25px;
+        position: absolute;
     }
 </style>
 <body>
-    <div id="output" class="console"></div>
-    <div class="footer">Powered by Lavspent.BrowserLogger</div>
+<div id="output" class="console"></div>
+<div class="footer">Powered by Lavspent.BrowserLogger</div>

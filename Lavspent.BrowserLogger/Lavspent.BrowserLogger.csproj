@@ -30,6 +30,10 @@
     <Description></Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1822</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="nupkgs\**" />
     <EmbeddedResource Remove="nupkgs\**" />

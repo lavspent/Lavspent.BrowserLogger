@@ -17,5 +17,4 @@ namespace Lavspent.BrowserLogger
             return null;
         }
     }
-
 }

@@ -6,7 +6,8 @@ namespace Lavspent.BrowserLogger
 {
     public static class BrowserLoggerMiddlewareExtensions
     {
-        public static IApplicationBuilder UseBrowserLogger(this IApplicationBuilder applicationBuilder, BrowserLoggerOptions options = null)
+        public static IApplicationBuilder UseBrowserLogger(this IApplicationBuilder applicationBuilder,
+            BrowserLoggerOptions options = null)
         {
             // inject our logger
             var browserLoggerService = applicationBuilder.ApplicationServices.GetService<BrowserLoggerService>();
@@ -14,7 +15,6 @@ namespace Lavspent.BrowserLogger
             loggerFactory.AddProvider(new BrowserLoggerProvider(browserLoggerService));
 
             options = options ?? new BrowserLoggerOptions();
-            
 
             // inject our middleware
             return applicationBuilder.UseMiddleware<BrowserLoggerMiddleware>(options);

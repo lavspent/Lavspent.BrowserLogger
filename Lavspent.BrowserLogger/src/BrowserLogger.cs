@@ -1,31 +1,44 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions.Internal;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions.Internal;
 
 namespace Lavspent.BrowserLogger
 {
-
-    class BrowserLogger : ILogger
+    internal class BrowserLogger : ILogger
     {
-        private static readonly string _loglevelPadding = ": ";
+        private static readonly string _logLevelPadding = ": ";
         private static readonly string _messagePadding;
         private static readonly string _newLineWithMessagePadding;
 
         private readonly BrowserLoggerService browserLoggerService;
 
+        private Func<string, LogLevel, bool> _filter;
+
+        static BrowserLogger()
+        {
+            var logLevelString = GetLogLevelString(LogLevel.Information);
+            _messagePadding =
+                string.Concat(Enumerable.Repeat("&nbsp;", logLevelString.Length + _logLevelPadding.Length));
+            _newLineWithMessagePadding = "<br/>" + _messagePadding;
+        }
+
+        public BrowserLogger(string name, Func<string, LogLevel, bool> filter,
+            BrowserLoggerService browserLoggerService)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Filter = filter ?? ((category, logLevel) => true);
+            this.browserLoggerService =
+                browserLoggerService ?? throw new ArgumentNullException(nameof(browserLoggerService));
+        }
+
         public string Name { get; }
 
-        private Func<string, LogLevel, bool> _filter;
         public Func<string, LogLevel, bool> Filter
         {
-            get { return _filter; }
-            set
-            {
-                _filter = value ?? throw new ArgumentNullException(nameof(value));
-            }
+            get => _filter;
+            set => _filter = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         internal IExternalScopeProvider ScopeProvider { get; set; }
@@ -36,23 +49,11 @@ namespace Lavspent.BrowserLogger
 
         internal string TimestampFormat { get; set; }
 
-        static BrowserLogger()
+
+        public IDisposable BeginScope<TState>(TState state)
         {
-            var logLevelString = GetLogLevelString(LogLevel.Information);
-            _messagePadding = String.Concat(Enumerable.Repeat("&nbsp;", logLevelString.Length + _loglevelPadding.Length));
-            _newLineWithMessagePadding = "<br/>" + _messagePadding;
+            return ScopeProvider?.Push(state) ?? NullScope.Instance;
         }
-
-        public BrowserLogger(string name, Func<string, LogLevel, bool> filter, BrowserLoggerService browserLoggerService)
-        {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Filter = filter ?? ((category, logLevel) => true);
-            this.browserLoggerService = browserLoggerService ?? throw new ArgumentNullException(nameof(browserLoggerService));
-
-        }
-
-
-        public IDisposable BeginScope<TState>(TState state) => ScopeProvider?.Push(state) ?? NullScope.Instance;
 
         public bool IsEnabled(LogLevel logLevel)
         {
@@ -65,27 +66,21 @@ namespace Lavspent.BrowserLogger
         //            this.browserLoggerService.Enqueue(message+ "\r\n" + exception ?? "");
         //        }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
+            Func<TState, Exception, string> formatter)
         {
-            if (!IsEnabled(logLevel))
-            {
-                return;
-            }
+            if (!IsEnabled(logLevel)) return;
 
-            if (formatter == null)
-            {
-                throw new ArgumentNullException(nameof(formatter));
-            }
+            if (formatter == null) throw new ArgumentNullException(nameof(formatter));
 
             var message = formatter(state, exception);
 
             if (!string.IsNullOrEmpty(message) || exception != null)
-            {
                 WriteMessage(logLevel, Name, eventId.Id, message, exception);
-            }
         }
 
-        public virtual void WriteMessage(LogLevel logLevel, string logName, int eventId, string message, Exception exception)
+        public virtual void WriteMessage(LogLevel logLevel, string logName, int eventId, string message,
+            Exception exception)
         {
             //var logBuilder = _logBuilder;
             //_logBuilder = null;
@@ -108,7 +103,7 @@ namespace Lavspent.BrowserLogger
             logLevelString = GetLogLevelString(logLevel);
 
             // category and event id
-            logBuilder.Append(_loglevelPadding);
+            logBuilder.Append(_logLevelPadding);
             logBuilder.Append(logName);
             logBuilder.Append("[");
             logBuilder.Append(eventId);
@@ -136,10 +131,8 @@ namespace Lavspent.BrowserLogger
             // System.InvalidOperationException
             //    at Namespace.Class.Function() in File:line X
             if (exception != null)
-            {
                 // exception message
                 logBuilder.AppendLine(exception.ToString());
-            }
 
             var hasLevel = !string.IsNullOrEmpty(logLevelString);
             var timestampFormat = TimestampFormat;
@@ -148,7 +141,7 @@ namespace Lavspent.BrowserLogger
 
             //            this.browserLoggerService.Enqueue(message+ "\r\n" + exception ?? "");
 
-            this.browserLoggerService.Enqueue(new LogMessageEntry()
+            browserLoggerService.Enqueue(new LogMessageEntry
             {
                 TimeStamp = timestampFormat != null ? DateTime.Now.ToString(timestampFormat) : null,
                 Message = logBuilder.ToString(),
@@ -191,10 +184,7 @@ namespace Lavspent.BrowserLogger
 
         private BrowserColors GetLogLevelBrowserColors(LogLevel logLevel)
         {
-            if (DisableColors)
-            {
-                return BrowserColors.Default; 
-            }
+            if (DisableColors) return BrowserColors.Default;
 
             // We must explicitly set the background color if we are setting the foreground color,
             // since just setting one can look bad on the users console.
@@ -238,7 +228,6 @@ namespace Lavspent.BrowserLogger
                 }
             }
         }
-
     }
 
 
@@ -261,12 +250,12 @@ namespace Lavspent.BrowserLogger
         public static readonly BrowserColor Yellow = new BrowserColor("yellow");
         public static readonly BrowserColor White = new BrowserColor("white");
 
-        public string Color { get; private set; }
-
         public BrowserColor(string color)
         {
             Color = color;
         }
+
+        public string Color { get; }
     }
 
     internal class BrowserColors
