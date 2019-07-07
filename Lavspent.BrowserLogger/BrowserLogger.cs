@@ -11,18 +11,15 @@ namespace Lavspent.BrowserLogger
     internal class BrowserLogger : ILogger
     {
         private readonly BrowserLoggerService _browserLoggerService;
-        private readonly BrowserLoggerOptions _options;
         private Func<string, LogLevel, bool> _filter;
 
         public BrowserLogger(string name, Func<string, LogLevel, bool> filter,
-            BrowserLoggerService browserLoggerService, IOptions<BrowserLoggerOptions> options)
+            BrowserLoggerService browserLoggerService)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Filter = filter ?? ((category, logLevel) => true);
             _browserLoggerService =
                 browserLoggerService ?? throw new ArgumentNullException(nameof(browserLoggerService));
-
-            _options = options?.Value ?? new BrowserLoggerOptions();
         }
 
         public string Name { get; }
@@ -35,12 +32,7 @@ namespace Lavspent.BrowserLogger
 
         internal IExternalScopeProvider ScopeProvider { get; set; }
 
-        public bool DisableColors { get; set; }
-
         internal LogLevel LogToStandardErrorThreshold { get; set; }
-
-        internal string TimestampFormat { get; set; }
-
 
         public IDisposable BeginScope<TState>(TState state)
         {

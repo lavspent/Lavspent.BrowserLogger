@@ -2,235 +2,221 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
-    <title>BrowserLogger</title>
+<meta charset="utf-8"/>
+<title>BrowserLogger</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
 
-    <style type="text/css">
-        html, body {
-            font-family: 'Roboto Mono, Lucida Console', monospace;
-            font-size: 13px;
-            color: silver;
-            background: black;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            top: 0;
-            width: 100%;
-        }
+<style type="text/css">
+    html, body {
+        background: black;
+        color: silver;
+        font-family: 'Roboto Mono, Lucida Console', monospace;
+        font-size: 13px;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        top: 0;
+        width: 100%;
+    }
 
-        .wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
 
-        .header, .footer {
-            font-size: 13px;
-            padding: 10px;
-        }
+    .header, .footer {
+        font-size: 13px;
+        padding: 10px;
+    }
 
-        .content {
-            -ms-flex: 1;
-            -o-flex: 1;
-            -webkit-flex: 1;
-            flex: 1;
-            overflow: auto;
-            padding: 5px 10px;
-            color: greenyellow;
-            background: #1D1C1C;
-        }
+    .content {
+        -ms-flex: 1;
+        -o-flex: 1;
+        -webkit-flex: 1;
+        background: #1D1C1C;
+        color: greenyellow;
+        flex: 1;
+        overflow: auto;
+        padding: 5px 10px;
+    }
 
-        div.table {
-            display: table;
-        }
+    div.table { display: table; }
 
-        div.row {
-            display: table-row;
-        }
+    div.row { display: table-row; }
 
-        div.cell {
-            white-space: nowrap;
-            display: table-cell;
-            padding-right: 10px;
-        }
+    div.cell {
+        display: table-cell;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
 
-        div.lastcell {
-            display: table-cell;
-        }
+    div.lastcell { display: table-cell; }
 
-        div.line {
-            text-align: right;
-            color: gray;
-        }
+    div.line {
+        color: gray;
+        text-align: right;
+    }
 
-        span.trce {
-            color: black;
-            background: silver;
-        }
+    span.trce {
+        background: silver;
+        color: black;
+    }
 
-        span.dbug {
-            color: black;
-            background: white;
-        }
+    span.dbug {
+        background: white;
+        color: black;
+    }
 
-        span.info {
-            color: black;
-            background: greenyellow;
-        }
+    span.info {
+        background: greenyellow;
+        color: black;
+    }
 
-        span.warn {
-            color: black;
-            background: yellow;
-        }
+    span.warn {
+        background: yellow;
+        color: black;
+    }
 
-        span.fail {
-            color: white;
-            background: coral;
-        }
+    span.fail {
+        background: coral;
+        color: white;
+    }
 
-        span.crit {
-            color: white;
-            background: red;
-        }
+    span.crit {
+        background: red;
+        color: white;
+    }
 
-        /*.led {
+    /*.led {
             font-size: 25px;
             line-height: 25px;
             vertical-align: middle;
         }*/
 
-        .ledText {
-            line-height: 25px;
-            vertical-align: middle;
+    .ledText {
+        line-height: 25px;
+        vertical-align: middle;
+    }
+
+    .dot {
+        background-color: silver;
+        border-radius: 50%;
+        display: inline-block;
+        height: 10px;
+        line-height: 25px;
+        vertical-align: middle;
+        width: 10px;
+    }
+
+    .online { background: yellowgreen; }
+
+    .offline { background: red; }
+
+    a {
+        color: white;
+        text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    a:active { color: white; }
+
+    a:visited { color: white; }
+</style>
+
+<script language="javascript" type="text/javascript">
+    var line = 1;
+
+    function init(options) {
+        var output = document.getElementById("output");
+        var websocket = new WebSocket(options.webSocketUrl);
+        websocket.onopen = function(evt) { onOpen(evt, options, output); };
+        websocket.onclose = function(evt) { onClose(evt, options, output); };
+        websocket.onmessage = function(evt) { onMessage(evt, options, output); };
+        websocket.onerror = function(evt) { onError(evt, options, output); };
+    }
+
+    function setStatus(status) {
+        var ledText = document.getElementById("ledText");
+        var ledLamp = document.getElementById("ledLamp");
+        if (status) {
+            ledText.innerHTML = "Connected";
+            ledLamp.classList.remove("offline");
+            ledLamp.classList.add("online");
+        } else {
+            ledText.innerHTML = "Disconnected";
+            ledLamp.classList.remove("online");
+            ledLamp.classList.add("offline");
+        }
+    }
+
+    function onOpen(evt, options, led) {
+        setStatus(true);
+    }
+
+    function onClose(evt, options, led) {
+
+        setStatus(false);
+    }
+
+    function replaceURLWithHTMLLinks(text) {
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i;
+        return text.replace(exp, "<a href='$1'>$1</a>");
+    }
+
+    function onMessage(evt, options, output) {
+        var data = JSON.parse(evt.data);
+
+        var message = '';
+
+        if (options.showLineNumbers)
+            message = message + '<div class="cell line">' + line + '&gt;</div>';
+
+        message = message + '<div class="cell"><span class="' + data.logLevel + '">' + data.logLevel + '</div>';
+
+        if (options.showTimeStamp) {
+            var dateString = new Date(data.timeStampUtc).toISOString().slice(0, 19).replace(/-/g, "/")
+                .replace("T", " ");
+            message = message + '<div class="cell timestamp">' + dateString + '</div>';
         }
 
-        .dot {
-            height: 10px;
-            width: 10px;
-            background-color: silver;
-            border-radius: 50%;
-            display: inline-block;
-            line-height: 25px;
-            vertical-align: middle;
+        if (options.showClassName)
+            message = message + '<div class="cell name">' + data.name + '</div>';
+
+        message = message + '<div class="lastcell message">' + replaceURLWithHTMLLinks(data.message) + '</div>';
+
+        writeToScreen(output, options, message);
+        line++;
+    }
+
+    function onError(evt, options, output) {
+        writeToScreen(output, options, evt.data);
+    }
+
+    function writeToScreen(output, options, message) {
+        var row = document.createElement("div");
+        row.innerHTML = message;
+        row.className = "row";
+        if (options.reverseOrder)
+            output.insertAdjacentElement('afterbegin', row);
+        else {
+            output.appendChild(row);
         }
-
-        .online {
-            background: yellowgreen;
-        }
-
-        .offline {
-            background: red;
-        }
-
-        a {
-            color: white;
-            text-decoration: none;
-        }
-
-            a:hover {
-                text-decoration: underline;
-            }
-
-            a:active {
-                color: white;
-            }
-
-            a:visited {
-                color: white;
-            }
-    </style>
-
-    <script language="javascript" type="text/javascript">
-        var line = 1;
-        function init(options) {
-            var output = document.getElementById("output");
-            var websocket = new WebSocket(options.webSocketUrl);
-            websocket.onopen = function (evt) { onOpen(evt, options, output); };
-            websocket.onclose = function (evt) { onClose(evt, options, output); };
-            websocket.onmessage = function (evt) { onMessage(evt, options, output); };
-            websocket.onerror = function (evt) { onError(evt, options, output); };
-        }
-
-        function setStatus(status) {
-            var ledText = document.getElementById("ledText");
-            var ledLamp = document.getElementById("ledLamp");
-            if (status) {
-                ledText.innerHTML = "Connected";
-                ledLamp.classList.remove("offline");
-                ledLamp.classList.add("online");
-            } else {
-                ledText.innerHTML = "Disconnected";
-                ledLamp.classList.remove("online");
-                ledLamp.classList.add("offline");
-            }
-        }
-
-        function onOpen(evt, options, led) {
-            setStatus(true);
-        }
-
-        function onClose(evt, options, led) {
-
-            setStatus(false);
-        }
-
-        function replaceURLWithHTMLLinks(text) {
-            var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i;
-            return text.replace(exp, "<a href='$1'>$1</a>");
-        }
-
-        function onMessage(evt, options, output) {
-            var data = JSON.parse(evt.data);
-
-            var message = '';
-
-            if (options.showLineNumbers)
-                message = message + '<div class="cell line">' + line + '&gt;</div>';
-
-            message = message + '<div class="cell"><span class="' + data.logLevel + '">' + data.logLevel + '</div>';
-
-            if (options.showTimeStamp) {
-                var dateString = new Date(data.timeStampUtc).toISOString().slice(0, 19).replace(/-/g, "/").replace("T", " ");
-                message = message + '<div class="cell timestamp">' + dateString + '</div>';
-            }
-
-            if (options.showClassName)
-                message = message + '<div class="cell name">' + data.name + '</div>';
-
-            message = message + '<div class="lastcell message">' + replaceURLWithHTMLLinks(data.message) + '</div>';
-
-            writeToScreen(output, options, message);
-            line++;
-        }
-
-        function onError(evt, options, output) {
-            writeToScreen(output, options, evt.data);
-        }
-
-        function writeToScreen(output, options, message) {
-            var row = document.createElement("div");
-            row.innerHTML = message;
-            row.className = "row";
-            if (options.reverseOrder)
-                output.insertAdjacentElement('afterbegin', row);
-            else {
-                output.appendChild(row);
-            }
-        }
-    </script>
+    }
+</script>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="header">
-            <span id="ledLamp" class="dot offline"></span>
-            <span id="ledText">Unknown</span>
-        </div>
-        <div class="content">
-            <div id="output"></div>
-        </div>
-        <div class="footer">Powered by <a target="_blank" href="https://github.com/lavspent/Lavspent.BrowserLogger">Lavspent.BrowserLogger</a></div>
+<div class="wrapper">
+    <div class="header">
+        <span id="ledLamp" class="dot offline"></span>
+        <span id="ledText">Unknown</span>
     </div>
+    <div class="content">
+        <div id="output"></div>
+    </div>
+    <div class="footer">Powered by <a target="_blank" href="https://github.com/lavspent/Lavspent.BrowserLogger">Lavspent.BrowserLogger</a></div>
+</div>
 </body>
 </html>

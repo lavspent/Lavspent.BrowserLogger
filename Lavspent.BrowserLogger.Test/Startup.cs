@@ -21,24 +21,25 @@ namespace Lavspent.BrowserLogger.Test
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.AddBrowserLogger();
+            services.AddOptions<BrowserLoggerOptions>()
+                .Configure(s =>
+                    {
+                        s.ConsolePath = "/con";
+                        s.LogStreamUrl = "ws://localhost:5000/ls";
+                        s.ShowClassName = false;
+                    }
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseWebSockets();
-            app.UseBrowserLogger(new BrowserLoggerOptions()
-            {
-                ConsolePath = "/con",
-                LogStreamUrl = "ws://localhost:5000/ls",
-                ShowClassName = false
-            });
+            app.UseBrowserLogger();
             app.UseMvc();
         }
     }

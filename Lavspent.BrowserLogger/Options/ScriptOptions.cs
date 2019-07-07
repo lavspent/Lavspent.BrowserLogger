@@ -1,6 +1,6 @@
 ﻿namespace Lavspent.BrowserLogger.Options
 {
-    public class ScriptOptions
+    internal class ScriptOptions
     {
         public ScriptOptions(BrowserLoggerOptions options)
         {

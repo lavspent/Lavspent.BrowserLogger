@@ -11,6 +11,7 @@ namespace Lavspent.BrowserLogger.Extensions
             {
                 result = reader.ReadToEnd();
             }
+
             return result;
         }
     }

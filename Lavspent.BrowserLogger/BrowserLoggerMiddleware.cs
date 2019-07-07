@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Lavspent.BrowserLogger.Extensions;
 using Lavspent.BrowserLogger.Options;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -19,16 +17,16 @@ namespace Lavspent.BrowserLogger
         private readonly Uri _consoleUri;
         private readonly Uri _logStreamUri;
         private readonly RequestDelegate _next;
-        private BrowserLoggerOptions _options;
+        private readonly BrowserLoggerOptions _options;
 
         public BrowserLoggerMiddleware(RequestDelegate next, BrowserLoggerService browserLoggerService,
-            BrowserLoggerOptions options)
+            IOptions<BrowserLoggerOptions> options = null)
         {
             _next = next;
             _browserLoggerService = browserLoggerService;
-            _options = options;
-            _logStreamUri = new Uri(options.LogStreamUrl);
-            _consoleUri = new Uri(_logStreamUri, options.ConsolePath);
+            _options = options?.Value ?? new BrowserLoggerOptions();
+            _logStreamUri = new Uri(_options.LogStreamUrl);
+            _consoleUri = new Uri(_logStreamUri, _options.ConsolePath);
         }
 
         public async Task InvokeAsync(HttpContext httpContext)
@@ -54,7 +52,6 @@ namespace Lavspent.BrowserLogger
         {
             string result;
             if (_options.TemplateFilePath != null)
-            {
                 try
                 {
                     result = File.ReadAllText(_options.TemplateFilePath);
@@ -64,10 +61,9 @@ namespace Lavspent.BrowserLogger
                 {
                     // ignored
                 }
-            }
 
             var resourceStream = Assembly.GetExecutingAssembly()
-                    .GetManifestResourceStream("Lavspent.BrowserLogger.Templates.Default.html");
+                .GetManifestResourceStream("Lavspent.BrowserLogger.Templates.Default.html");
             result = resourceStream.ReadString();
 
             return result;
@@ -78,7 +74,7 @@ namespace Lavspent.BrowserLogger
             // Preparing Initialization script
             var options = new ScriptOptions(_options);
             var optionsJson = JsonConvert.SerializeObject(options,
-                new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
             var initScript = "<script language='javascript' type='text/javascript'>\n" +
                              $"init({optionsJson});\n</script>\n" +
                              "</body>";
