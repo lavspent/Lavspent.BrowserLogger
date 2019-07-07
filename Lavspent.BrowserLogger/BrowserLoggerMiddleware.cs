@@ -43,15 +43,34 @@ namespace Lavspent.BrowserLogger
 
         private async Task HandleConsoleRequest(HttpContext httpContext)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceStream =
-                assembly.GetManifestResourceStream("Lavspent.BrowserLogger.Templates.Default.html");
             httpContext.Response.StatusCode = 200;
             httpContext.Response.ContentType = "text/html";
-            var content = resourceStream.ReadString();
+            var content = GetTemplateContent();
             SetIniScript(ref content);
-
             await httpContext.Response.WriteAsync(content);
+        }
+
+        private string GetTemplateContent()
+        {
+            string result;
+            if (_options.TemplateFilePath != null)
+            {
+                try
+                {
+                    result = File.ReadAllText(_options.TemplateFilePath);
+                    return result;
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+
+            var resourceStream = Assembly.GetExecutingAssembly()
+                    .GetManifestResourceStream("Lavspent.BrowserLogger.Templates.Default.html");
+            result = resourceStream.ReadString();
+
+            return result;
         }
 
         private void SetIniScript(ref string content)
