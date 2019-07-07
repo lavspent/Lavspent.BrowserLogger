@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Lavspent.BrowserLogger
+namespace Lavspent.BrowserLogger.Extensions
 {
     public static class BrowserLoggerProviderExtensions
     {

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Lavspent.BrowserLogger.Extensions;
+using Lavspent.BrowserLogger.Options;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +36,8 @@ namespace Lavspent.BrowserLogger.Test
             app.UseBrowserLogger(new BrowserLoggerOptions()
             {
                 ConsolePath = "/con",
-                LogStreamPath = "/lsp"
+                LogStreamUrl = "ws://localhost:5000/ls",
+                ShowClassName = false
             });
             app.UseMvc();
         }

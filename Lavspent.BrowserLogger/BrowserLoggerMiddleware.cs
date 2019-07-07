@@ -1,15 +1,25 @@
-﻿using System.IO;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
+using Lavspent.BrowserLogger.Extensions;
+using Lavspent.BrowserLogger.Options;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Lavspent.BrowserLogger
 {
     internal class BrowserLoggerMiddleware
     {
         private readonly BrowserLoggerService _browserLoggerService;
+        private readonly Uri _consoleUri;
+        private readonly Uri _logStreamUri;
         private readonly RequestDelegate _next;
-        private readonly BrowserLoggerOptions _options;
+        private BrowserLoggerOptions _options;
 
         public BrowserLoggerMiddleware(RequestDelegate next, BrowserLoggerService browserLoggerService,
             BrowserLoggerOptions options)
@@ -17,13 +27,15 @@ namespace Lavspent.BrowserLogger
             _next = next;
             _browserLoggerService = browserLoggerService;
             _options = options;
+            _logStreamUri = new Uri(options.LogStreamUrl);
+            _consoleUri = new Uri(_logStreamUri, options.ConsolePath);
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task InvokeAsync(HttpContext httpContext)
         {
-            if (httpContext.Request.Path == _options.ConsolePath)
+            if (httpContext.Request.Path.Value == _consoleUri.AbsolutePath)
                 await HandleConsoleRequest(httpContext);
-            else if (httpContext.Request.Path == _options.LogStreamPath)
+            else if (httpContext.Request.Path.Value == _logStreamUri.AbsolutePath)
                 await HandleLogStreamRequest(httpContext);
             else
                 await _next.Invoke(httpContext);
@@ -33,21 +45,27 @@ namespace Lavspent.BrowserLogger
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceStream =
-                assembly.GetManifestResourceStream("Lavspent.BrowserLogger.src.BrowserLoggerConsole.html");
+                assembly.GetManifestResourceStream("Lavspent.BrowserLogger.Templates.Default.html");
             httpContext.Response.StatusCode = 200;
             httpContext.Response.ContentType = "text/html";
-            await resourceStream.CopyToAsync(httpContext.Response.Body);
+            var content = resourceStream.ReadString();
+            SetIniScript(ref content);
 
-            var options = "{wsUri: \"ws://\" + location.host + \"" + _options.LogStreamPath + "\"}";
-            var init = "<script language=\"javascript\" type=\"text/javascript\">init(" + options + ");</script>";
-            init += "</body></html>";
+            await httpContext.Response.WriteAsync(content);
+        }
 
-            using (var streamWriter = new StreamWriter(httpContext.Response.Body))
-            {
-                streamWriter.WriteLine();
-                streamWriter.Write(init);
-                streamWriter.Flush();
-            }
+        private void SetIniScript(ref string content)
+        {
+            // Preparing Initialization script
+            var options = new ScriptOptions(_options);
+            var optionsJson = JsonConvert.SerializeObject(options,
+                new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+            var initScript = "<script language='javascript' type='text/javascript'>\n" +
+                             $"init({optionsJson});\n</script>\n" +
+                             "</body>";
+
+            content = content.Replace("</body>", initScript,
+                StringComparison.InvariantCultureIgnoreCase);
         }
 
         private async Task HandleLogStreamRequest(HttpContext httpContext)

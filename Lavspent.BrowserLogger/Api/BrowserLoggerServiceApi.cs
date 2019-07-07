@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Lavspent.BrowserLogger
+namespace Lavspent.BrowserLogger.Api
 {
     internal class AsyncQueue<TType>
     {

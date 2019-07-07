@@ -2,8 +2,9 @@
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Lavspent.BrowserLogger.Api;
 
-namespace Lavspent.BrowserLogger
+namespace Lavspent.BrowserLogger.Handlers
 {
     internal class WebSocketHandler : IDisposable
     {

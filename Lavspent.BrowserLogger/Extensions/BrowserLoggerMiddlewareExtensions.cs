@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Lavspent.BrowserLogger.Options;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Lavspent.BrowserLogger
+namespace Lavspent.BrowserLogger.Extensions
 {
     public static class BrowserLoggerMiddlewareExtensions
     {

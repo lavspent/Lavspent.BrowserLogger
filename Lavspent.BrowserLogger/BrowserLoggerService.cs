@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Text;
+using Lavspent.BrowserLogger.Handlers;
+using Lavspent.BrowserLogger.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

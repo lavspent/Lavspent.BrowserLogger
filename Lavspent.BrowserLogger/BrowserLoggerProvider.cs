@@ -13,7 +13,7 @@ namespace Lavspent.BrowserLogger
 
         public ILogger CreateLogger(string categoryName)
         {
-            return new BrowserLogger(categoryName, null, _browserLoggerService);
+            return new BrowserLogger(categoryName, null, _browserLoggerService, null);
         }
 
         public void Dispose()
