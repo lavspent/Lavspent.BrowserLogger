@@ -3,7 +3,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8"/>
-<title>BrowserLogger</title>
+<title>Browser Logger</title>
 
 <link href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap" rel="stylesheet">
 <style type="text/css">
@@ -245,15 +245,16 @@
     function init(options) {
         var output = document.getElementById("output");
         var websocket = new WebSocket(options.webSocketUrl);
-        websocket.onopen = function(evt) { onOpen(evt, options, output); };
-        websocket.onclose = function(evt) { onClose(evt, options, output); };
+        websocket.onopen = function(evt) { onOpen(evt, options); };
+        websocket.onclose = function(evt) { onClose(evt, options); };
         websocket.onmessage = function(evt) { onMessage(evt, options, output); };
         websocket.onerror = function(evt) { onError(evt, options, output); };
     }
 
-    function setStatus(status) {
+    function setStatus(options, status) {
         var ledText = document.getElementById("ledText");
         var ledLamp = document.getElementById("ledLamp");
+        var url = document.getElementById("url");
         if (status) {
             ledText.innerHTML = "Connected";
             ledLamp.classList.remove("offline");
@@ -263,15 +264,16 @@
             ledLamp.classList.remove("online");
             ledLamp.classList.add("offline");
         }
+        url.innerHTML = "("+options.webSocketUrl+")";
     }
 
-    function onOpen(evt, options, led) {
-        setStatus(true);
+    function onOpen(evt, options) {
+        setStatus(options, true);
     }
 
-    function onClose(evt, options, led) {
+    function onClose(evt, options) {
 
-        setStatus(false);
+        setStatus(options, false);
     }
 
     function replaceURLWithHTMLLinks(text) {
@@ -335,6 +337,7 @@
         <span>Logger state:</span>
         <span id="ledLamp" class="dot offline"></span>
         <span id="ledText" class="ledText">Unknown</span>
+        <span id="url"></span>
     </div>
     <div class="content">
         <div id="output"></div>
