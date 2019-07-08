@@ -92,6 +92,8 @@
     .ledText {
         line-height: 25px;
         vertical-align: middle;
+        text-transform: uppercase;
+        color: white;
     }
 
     .dot {
@@ -330,8 +332,9 @@
 <body>
 <div class="wrapper">
     <div class="header">
+        <span>Logger state:</span>
         <span id="ledLamp" class="dot offline"></span>
-        <span id="ledText">Unknown</span>
+        <span id="ledText" class="ledText">Unknown</span>
     </div>
     <div class="content">
         <div id="output"></div>
