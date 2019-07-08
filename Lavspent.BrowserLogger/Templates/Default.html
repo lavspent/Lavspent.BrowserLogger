@@ -2,7 +2,7 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>BrowserLogger</title>
 
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
@@ -42,9 +42,13 @@
             padding: 5px 10px;
         }
 
-        div.table { display: table; }
+        div.table {
+            display: table;
+        }
 
-        div.row { display: table-row; }
+        div.row {
+            display: table-row;
+        }
 
         div.cell {
             display: table-cell;
@@ -52,7 +56,9 @@
             white-space: nowrap;
         }
 
-        div.lastcell { display: table-cell; }
+        div.lastcell {
+            display: table-cell;
+        }
 
         div.line {
             color: gray;
@@ -60,13 +66,13 @@
         }
 
         span.trce {
-            background: silver;
-            color: black;
+            background: black;
+            color: silver;
         }
 
         span.dbug {
-            background: white;
-            color: black;
+            background: black;
+            color: white;
         }
 
         span.info {
@@ -75,17 +81,17 @@
         }
 
         span.warn {
-            background: yellow;
-            color: black;
+            background: orange;
+            color: white;
         }
 
         span.fail {
-            background: coral;
+            background: red;
             color: white;
         }
 
         span.crit {
-            background: red;
+            background: darkred;
             color: white;
         }
 
@@ -104,20 +110,30 @@
             width: 10px;
         }
 
-        .online { background: yellowgreen; }
+        .online {
+            background: yellowgreen;
+        }
 
-        .offline { background: red; }
+        .offline {
+            background: red;
+        }
 
         a {
             color: white;
             text-decoration: none;
         }
 
-        a:hover { text-decoration: underline; }
+            a:hover {
+                text-decoration: underline;
+            }
 
-        a:active { color: white; }
+            a:active {
+                color: white;
+            }
 
-        a:visited { color: white; }
+            a:visited {
+                color: white;
+            }
     </style>
 
     <script language="javascript" type="text/javascript">
@@ -126,10 +142,10 @@
         function init(options) {
             var output = document.getElementById("output");
             var websocket = new WebSocket(options.webSocketUrl);
-            websocket.onopen = function(evt) { onOpen(evt, options, output); };
-            websocket.onclose = function(evt) { onClose(evt, options, output); };
-            websocket.onmessage = function(evt) { onMessage(evt, options, output); };
-            websocket.onerror = function(evt) { onError(evt, options, output); };
+            websocket.onopen = function (evt) { onOpen(evt, options, output); };
+            websocket.onclose = function (evt) { onClose(evt, options, output); };
+            websocket.onmessage = function (evt) { onMessage(evt, options, output); };
+            websocket.onerror = function (evt) { onError(evt, options, output); };
         }
 
         function setStatus(status) {
@@ -202,15 +218,15 @@
     </script>
 </head>
 <body>
-<div class="wrapper">
-    <div class="header">
-        <span id="ledLamp" class="dot offline"></span>
-        <span id="ledText">Unknown</span>
+    <div class="wrapper">
+        <div class="header">
+            <span id="ledLamp" class="dot offline"></span>
+            <span id="ledText">Unknown</span>
+        </div>
+        <div class="content">
+            <div id="output"></div>
+        </div>
+        <div class="footer">Powered by <a target="_blank" href="https://github.com/lavspent/Lavspent.BrowserLogger">Lavspent.BrowserLogger</a></div>
     </div>
-    <div class="content">
-        <div id="output"></div>
-    </div>
-    <div class="footer">Powered by <a target="_blank" href="https://github.com/lavspent/Lavspent.BrowserLogger">Lavspent.BrowserLogger</a></div>
-</div>
 </body>
 </html>

@@ -76,8 +76,7 @@ namespace Lavspent.BrowserLogger
             var optionsJson = JsonConvert.SerializeObject(options,
                 new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
             var initScript = "<script language='javascript' type='text/javascript'>\n" +
-                             $"init({optionsJson});\n</script>\n" +
-                             "</body>";
+                             $"    init({optionsJson});\n</script>\n</body>";
 
             content = content.Replace("</body>", initScript,
                 StringComparison.InvariantCultureIgnoreCase);
