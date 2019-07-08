@@ -9,8 +9,9 @@
             ShowTimeStamp = options.ShowTimeStamp;
             ShowClassName = options.ShowClassName;
             ReverseOrder = options.ReverseOrder;
+            DateFormatString = options.DateFormatString;
         }
-
+        public string DateFormatString { get; set; }
         public bool ShowLineNumbers { get; set; }
         public bool ShowTimeStamp { get; set; }
         public bool ShowClassName { get; set; }
