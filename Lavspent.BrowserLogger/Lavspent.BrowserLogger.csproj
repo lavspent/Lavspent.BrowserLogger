@@ -27,7 +27,7 @@
     <AssemblyVersion>0.0.2$(VersionSuffix)</AssemblyVersion>
     <Copyright>Copyright © 2019 Petter Labraaten</Copyright>
     <Summary>Let you use your browser as a log target from any Asp.Net Core application.</Summary>
-    <Description></Description>
+    <Description>Let you use your browser as a log target from any Asp.Net Core application.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
