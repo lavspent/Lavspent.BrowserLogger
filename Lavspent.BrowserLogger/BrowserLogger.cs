@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Text;
 using Lavspent.BrowserLogger.Models;
-using Lavspent.BrowserLogger.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions.Internal;
-using Microsoft.Extensions.Options;
 
 namespace Lavspent.BrowserLogger
 {
