@@ -20,6 +20,7 @@ public void ConfigureServices(IServiceCollection services)
 {
     // ...
     services.AddBrowserLogger();
+    services.Configure<BrowserLoggerOptions>(Configuration.GetSection("Logging"));
 }
 ```
 
