@@ -1,13 +1,17 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Lavspent.BrowserLogger.Models
 {
     public struct LogMessageEntry
     {
-        public string LogLevel { get; set; }
-        public DateTime TimeStampUtc;
-        public string Name;
-        public string Message;
-        public bool LogAsError;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LogLevel LogLevel { get; set; }
+
+        public DateTime TimeStampUtc { get; set; }
+        public string Name { get; set; }
+        public string Message { get; set; }
     }
 }

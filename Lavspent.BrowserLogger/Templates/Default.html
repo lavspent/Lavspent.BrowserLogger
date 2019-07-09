@@ -88,12 +88,17 @@
         color: white;
     }
 
+    span.unkn {
+        background: white;
+        color: darkred;
+    }
+
     .ledText {
-        line-height: 25px;
-        vertical-align: middle;
-        text-transform: uppercase;
         color: white;
         font-weight: bold;
+        line-height: 25px;
+        text-transform: uppercase;
+        vertical-align: middle;
     }
 
     .dot {
@@ -264,7 +269,7 @@
             ledLamp.classList.remove("online");
             ledLamp.classList.add("offline");
         }
-        url.innerHTML = "("+options.logStreamUrl+")";
+        url.innerHTML = "(" + options.logStreamUrl + ")";
     }
 
     function onOpen(evt, options) {
@@ -281,6 +286,25 @@
         return text.replace(exp, "<a target='blank' href='$1'>$1</a>");
     }
 
+    function getShortLogLevel(logLevel) {
+        switch (logLevel) {
+        case "Trace":
+            return "trce";
+        case "Debug":
+            return "dbug";
+        case "Information":
+            return "info";
+        case "Warning":
+            return "warn";
+        case "Error":
+            return "fail";
+        case "Critical":
+            return "crit";
+        default:
+            return "unkn";
+        }
+    }
+
     function onMessage(evt, options, output) {
         var data = JSON.parse(evt.data);
 
@@ -289,7 +313,8 @@
         if (options.showLineNumbers)
             message = message + '<div class="cell line">' + line + '&gt;</div>';
 
-        message = message + '<div class="cell"><span class="' + data.logLevel + '">' + data.logLevel + '</div>';
+        var logLevel = getShortLogLevel(data.logLevel);
+        message = message + '<div class="cell"><span class="' + logLevel + '">' + logLevel + '</div>';
 
         if (options.showTimeStamp) {
             var date = new Date(data.timeStampUtc);

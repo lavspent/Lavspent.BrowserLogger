@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using Lavspent.BrowserLogger.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions.Internal;
@@ -30,8 +29,6 @@ namespace Lavspent.BrowserLogger
 
         internal IExternalScopeProvider ScopeProvider { get; set; }
 
-        internal LogLevel LogToStandardErrorThreshold { get; set; }
-
         public IDisposable BeginScope<TState>(TState state)
         {
             return ScopeProvider?.Push(state) ?? NullScope.Instance;
@@ -56,51 +53,11 @@ namespace Lavspent.BrowserLogger
             if (!string.IsNullOrEmpty(message) || exception != null)
                 _browserLoggerService.Enqueue(new LogMessageEntry
                 {
-                    LogLevel = GetLogLevelString(logLevel),
+                    LogLevel = logLevel,
                     TimeStampUtc = DateTime.UtcNow,
                     Name = Name,
-                    Message = message,
-                    LogAsError = logLevel >= LogToStandardErrorThreshold
+                    Message = message
                 });
-        }
-
-        private static string GetLogLevelString(LogLevel logLevel)
-        {
-            switch (logLevel)
-            {
-                case LogLevel.Trace:
-                    return "trce";
-                case LogLevel.Debug:
-                    return "dbug";
-                case LogLevel.Information:
-                    return "info";
-                case LogLevel.Warning:
-                    return "warn";
-                case LogLevel.Error:
-                    return "fail";
-                case LogLevel.Critical:
-                    return "crit";
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(logLevel));
-            }
-        }
-
-        private void GetScopeInformation(StringBuilder stringBuilder)
-        {
-            var scopeProvider = ScopeProvider;
-            if (scopeProvider != null)
-            {
-                var initialLength = stringBuilder.Length;
-
-                scopeProvider.ForEachScope((scope, state) =>
-                {
-                    var (builder, length) = state;
-                    var first = length == builder.Length;
-                    builder.Append(" => ").Append(scope);
-                }, (stringBuilder, initialLength));
-
-                if (stringBuilder.Length > initialLength) stringBuilder.AppendLine();
-            }
         }
     }
 }

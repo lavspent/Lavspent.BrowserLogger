@@ -28,16 +28,9 @@ namespace Lavspent.BrowserLogger
 
         public void Enqueue(LogMessageEntry logMessageEntry)
         {
-            // TODO: Reuse settings?
             var settings = new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()};
-
-
             var serializedEntry = JsonConvert.SerializeObject(logMessageEntry, settings);
-
-            // convert data to bytes
             var bytes = Encoding.UTF8.GetBytes(serializedEntry);
-
-            // add to all listeners
             foreach (var sw in _registrations.Values) sw.Queue.Enqueue(bytes);
         }
     }

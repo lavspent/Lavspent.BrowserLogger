@@ -19,7 +19,8 @@ namespace Lavspent.BrowserLogger
         private readonly RequestDelegate _next;
         private readonly BrowserLoggerOptions _options;
 
-        public BrowserLoggerMiddleware(RequestDelegate next, BrowserLoggerService browserLoggerService,
+        public BrowserLoggerMiddleware(RequestDelegate next,
+            BrowserLoggerService browserLoggerService,
             IOptions<BrowserLoggerOptions> options = null)
         {
             _next = next;
@@ -52,28 +53,25 @@ namespace Lavspent.BrowserLogger
         {
             string result;
             if (_options.TemplateFilePath != null)
-                try
-                {
-                    result = File.ReadAllText(_options.TemplateFilePath);
-                    return result;
-                }
-                catch
-                {
-                    // ignored
-                }
+            {
+                result = File.ReadAllText(_options.TemplateFilePath);
+            }
+            else
+            {
+                var resourceStream = Assembly.GetExecutingAssembly()
+                    .GetManifestResourceStream("Lavspent.BrowserLogger.Templates.Default.html");
 
-            var resourceStream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("Lavspent.BrowserLogger.Templates.Default.html");
-            result = resourceStream.ReadString();
+                result = resourceStream.ReadString();
+            }
 
             return result;
         }
 
         private void SetIniScript(ref string content)
         {
-            // Preparing Initialization script
             var optionsJson = JsonConvert.SerializeObject(_options.WebConsole,
                 new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
+
             var initScript = "<script language='javascript' type='text/javascript'>\n" +
                              $"    init({optionsJson});\n</script>\n</body>";
 

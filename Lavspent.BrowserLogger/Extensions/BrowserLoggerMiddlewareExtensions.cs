@@ -6,13 +6,12 @@ namespace Lavspent.BrowserLogger.Extensions
 {
     public static class BrowserLoggerMiddlewareExtensions
     {
-        public static IApplicationBuilder UseBrowserLogger(this IApplicationBuilder applicationBuilder)
+        public static IApplicationBuilder UseBrowserLogger(this IApplicationBuilder app)
         {
-            var browserLoggerService = applicationBuilder.ApplicationServices.GetService<BrowserLoggerService>();
-            var loggerFactory = applicationBuilder.ApplicationServices.GetService<ILoggerFactory>();
-
+            var browserLoggerService = app.ApplicationServices.GetService<BrowserLoggerService>();
+            var loggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
             loggerFactory.AddProvider(new BrowserLoggerProvider(browserLoggerService));
-            return applicationBuilder.UseMiddleware<BrowserLoggerMiddleware>();
+            return app.UseMiddleware<BrowserLoggerMiddleware>();
         }
     }
 }
