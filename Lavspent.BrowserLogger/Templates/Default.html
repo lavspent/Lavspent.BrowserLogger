@@ -259,7 +259,6 @@
     function setStatus(options, status) {
         var ledText = document.getElementById("ledText");
         var ledLamp = document.getElementById("ledLamp");
-        var url = document.getElementById("url");
         if (status) {
             ledText.innerHTML = "Connected";
             ledLamp.classList.remove("offline");
@@ -269,7 +268,7 @@
             ledLamp.classList.remove("online");
             ledLamp.classList.add("offline");
         }
-        url.innerHTML = "(" + options.logStreamUrl + ")";
+        ledText.title = options.logStreamUrl;
     }
 
     function onOpen(evt, options) {
@@ -362,7 +361,6 @@
         <span>Logger state:</span>
         <span id="ledLamp" class="dot offline"></span>
         <span id="ledText" class="ledText">Unknown</span>
-        <span id="url"></span>
     </div>
     <div class="content">
         <div id="output"></div>
