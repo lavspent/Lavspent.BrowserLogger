@@ -323,7 +323,7 @@
         var row = document.createElement("div");
         row.innerHTML = message;
         row.className = "row";
-        if (options.reverseOrder)
+        if (options.newOnTop)
             output.insertAdjacentElement('afterbegin', row);
         else {
             output.appendChild(row);

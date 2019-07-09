@@ -7,6 +7,6 @@
         public bool ShowClassName { get; set; } = true;
         public string DateFormatString { get; set; } = "HH:MM:ss.l";
         public string LogStreamUrl { get; set; } = "ws://localhost:5000/logstream";
-        public bool ReverseOrder { get; set; } = true;
+        public bool NewOnTop { get; set; } = true;
     }
 }
