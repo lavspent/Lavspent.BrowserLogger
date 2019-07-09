@@ -25,7 +25,7 @@ namespace Lavspent.BrowserLogger
             _next = next;
             _browserLoggerService = browserLoggerService;
             _options = options?.Value ?? new BrowserLoggerOptions();
-            _logStreamUri = new Uri(_options.LogStreamUrl);
+            _logStreamUri = new Uri(_options.WebConsole.LogStreamUrl);
             _consoleUri = new Uri(_logStreamUri, _options.ConsolePath);
         }
 
@@ -72,8 +72,7 @@ namespace Lavspent.BrowserLogger
         private void SetIniScript(ref string content)
         {
             // Preparing Initialization script
-            var options = new ScriptOptions(_options);
-            var optionsJson = JsonConvert.SerializeObject(options,
+            var optionsJson = JsonConvert.SerializeObject(_options.WebConsole,
                 new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
             var initScript = "<script language='javascript' type='text/javascript'>\n" +
                              $"    init({optionsJson});\n</script>\n</body>";

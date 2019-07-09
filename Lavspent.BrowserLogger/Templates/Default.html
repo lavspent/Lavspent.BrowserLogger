@@ -244,7 +244,7 @@
 
     function init(options) {
         var output = document.getElementById("output");
-        var websocket = new WebSocket(options.webSocketUrl);
+        var websocket = new WebSocket(options.logStreamUrl);
         websocket.onopen = function(evt) { onOpen(evt, options); };
         websocket.onclose = function(evt) { onClose(evt, options); };
         websocket.onmessage = function(evt) { onMessage(evt, options, output); };
@@ -264,7 +264,7 @@
             ledLamp.classList.remove("online");
             ledLamp.classList.add("offline");
         }
-        url.innerHTML = "("+options.webSocketUrl+")";
+        url.innerHTML = "("+options.logStreamUrl+")";
     }
 
     function onOpen(evt, options) {
