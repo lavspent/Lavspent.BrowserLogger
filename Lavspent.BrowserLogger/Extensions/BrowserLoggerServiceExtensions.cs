@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Lavspent.BrowserLogger
+namespace Lavspent.BrowserLogger.Extensions
 {
     public static class BrowserLoggerServiceExtensions
     {

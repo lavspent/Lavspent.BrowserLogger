@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Lavspent.BrowserLogger.Extensions;
+using Lavspent.BrowserLogger.Options;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,23 +21,19 @@ namespace Lavspent.BrowserLogger.Test
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.AddBrowserLogger();
+
+            services.Configure<BrowserLoggerOptions>(Configuration.GetSection("Logging"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseWebSockets();
-            app.UseBrowserLogger(new BrowserLoggerOptions()
-            {
-                ConsolePath = "/con",
-                LogStreamPath = "/lsp"
-            });
+            app.UseBrowserLogger();
             app.UseMvc();
         }
     }

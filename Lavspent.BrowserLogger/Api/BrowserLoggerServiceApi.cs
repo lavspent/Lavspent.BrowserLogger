@@ -3,23 +3,16 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Lavspent.BrowserLogger
+namespace Lavspent.BrowserLogger.Api
 {
     internal class AsyncQueue<TType>
     {
-        private ConcurrentQueue<TType> _queue = new ConcurrentQueue<TType>();
-        private SemaphoreSlim _signal = new SemaphoreSlim(0);
-
-        public AsyncQueue()
-        {
-        }
+        private readonly ConcurrentQueue<TType> _queue = new ConcurrentQueue<TType>();
+        private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
 
         public void Enqueue(TType value)
         {
-            if (value== null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             _queue.Enqueue(value);
             _signal.Release();

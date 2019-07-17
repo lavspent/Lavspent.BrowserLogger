@@ -1,19 +1,26 @@
+# Lavspent.BrowserLogger [![Build Status](https://travis-ci.org/semack/Lavspent.BrowserLogger.svg?branch=master)](https://travis-ci.org/semack/Lavspent.BrowserLogger)
+
 ### What?!
 
 Let you use your browser as a log target from any Asp.Net Core application.
 
 ### How?!
 
+##### Install:
+
+```
+install-package Lavspent.BrowserLogger
+```
+
+
 ##### In your code:
 
-```C#
-import Lavspent.BrowserLogger;
-```
 ```C#
 public void ConfigureServices(IServiceCollection services)
 {
     // ...
-    services.AddBrowserLoggerService();
+    services.AddBrowserLogger();
+    services.Configure<BrowserLoggerOptions>(Configuration.GetSection("Logging"));
 }
 ```
 

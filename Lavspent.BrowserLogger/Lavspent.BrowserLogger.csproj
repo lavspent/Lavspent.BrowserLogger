@@ -1,33 +1,57 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Version>0.0.1</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <PackageId>Lavspent.BrowserLogger</PackageId>
+    <Authors>petter.labraaten</Authors>
+    <Product>Lavspent.BrowserLogger</Product>
+    <Version>0.0.2$(VersionSuffix)</Version>
+    <AssemblyName>Lavspent.BrowserLogger</AssemblyName>
+    <RootNamespace>Lavspent.BrowserLogger</RootNamespace>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackageLicense>https://github.com/lavspent/Lavspent.BrowserLogger/blob/master/LICENSE</PackageLicense>
+    <PackageProjectUrl>https://github.com/lavspent/Lavspent.BrowserLogger</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/lavspent/Lavspent.BrowserLogger.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>asp-net-core ilogger logging logger browser-logging</PackageTags>
+    <PackageReleaseNotes>Initial build.</PackageReleaseNotes>
+    <AssemblyVersion>0.0.2$(VersionSuffix)</AssemblyVersion>
+    <Copyright>Copyright © 2019 Petter Labraaten</Copyright>
+    <Summary>Let you use your browser as a log target from any Asp.Net Core application.</Summary>
+    <Description>Let you use your browser as a log target from any Asp.Net Core application.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1822</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
-    <None Remove="src\BrowserLoggerConsole.html" />
+    <Compile Remove="nupkgs\**" />
+    <EmbeddedResource Remove="nupkgs\**" />
+    <None Remove="nupkgs\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="src\BrowserLoggerConsole.html" />
+    <None Remove="Templates\Default.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\Default.html" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
-      <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.hosting.abstractions\2.1.1\lib\netstandard2.0\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Console">
-      <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.logging.console\2.1.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Console.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
