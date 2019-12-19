@@ -1,7 +1,6 @@
 ﻿using System;
 using Lavspent.BrowserLogger.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions.Internal;
 
 namespace Lavspent.BrowserLogger
 {
@@ -58,6 +57,19 @@ namespace Lavspent.BrowserLogger
                     Name = Name,
                     Message = message
                 });
+        }
+
+        private class NullScope : IDisposable
+        {
+            public static NullScope Instance { get; } = new NullScope();
+
+            private NullScope()
+            {
+            }
+
+            public void Dispose()
+            {
+            }
         }
     }
 }
